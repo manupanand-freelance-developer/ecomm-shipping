@@ -4,7 +4,7 @@
 FROM docker.io/redhat/ubi9-minimal:latest AS build
 
 # Install tools
-RUN microdnf install -y tar xz curl 
+RUN microdnf install -y tar xz 
 
 # Install Maven
 RUN cd /opt && curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
@@ -29,7 +29,7 @@ RUN mvn clean package
 FROM docker.io/redhat/ubi9-minimal:latest
 
 # Install tools
-RUN microdnf install -y tar xz curl bash
+RUN microdnf install -y tar xz  bash
 
 # Install Amazon Corretto JDK 17
 RUN cd /opt && curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz \
