@@ -32,8 +32,8 @@ FROM docker.io/redhat/ubi9-minimal:latest
 RUN microdnf install -y tar xz  bash
 
 # Install Amazon Corretto JDK 17
-RUN cd /opt && curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz \
-    && tar -xzf amazon-corretto-17-x64-linux-jdk.tar.gz
+RUN cd /opt && curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz\
+    && tar -xzf  amazon-corretto-17-aarch64-linux-jdk.tar.gz
 
 # Set environment path
 ENV PATH="/opt/amazon-corretto-17.*/bin:$PATH"
