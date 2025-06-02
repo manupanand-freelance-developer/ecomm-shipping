@@ -4,15 +4,16 @@
 FROM docker.io/redhat/ubi9-minimal:latest AS build
 
 # Install tools
-RUN microdnf install -y tar xz 
+RUN microdnf install -y tar xz gzip
+# Install Amazon Corretto JDK 17 (ARM)
+RUN cd /opt && \
+    curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
+    tar -xzf amazon-corretto-17-aarch64-linux-jdk.tar.gz
 
 # Install Maven
-RUN cd /opt && curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
-    && tar -xzf apache-maven-3.9.9-bin.tar.gz
-
-# Install Amazon Corretto JDK 17
-RUN cd /opt && curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz \
-    && tar -xzf amazon-corretto-17-x64-linux-jdk.tar.gz
+RUN cd /opt && \
+    curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
+    tar -xzf apache-maven-3.9.9-bin.tar.gz
 
 # Set environment paths
 ENV PATH="/opt/apache-maven-3.9.9/bin:/opt/amazon-corretto-17.*/bin:$PATH"
@@ -29,7 +30,7 @@ RUN mvn clean package
 FROM docker.io/redhat/ubi9-minimal:latest
 
 # Install tools
-RUN microdnf install -y tar xz  bash
+RUN microdnf install -y tar xz gzip bash
 
 # Install Amazon Corretto JDK 17
 RUN cd /opt && curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz\
