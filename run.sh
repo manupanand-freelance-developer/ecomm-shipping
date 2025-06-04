@@ -16,4 +16,5 @@ fi
 
 
 
-java -jar /app/target/shipping-1.0.jar
+# java -jar /app/target/shipping-1.0.jar
+java -jar /app/target/*.jar

@@ -17,21 +17,24 @@ RUN cd /opt && \
     tar -xzf apache-maven-3.9.9-bin.tar.gz && \
     mv apache-maven-3.9.9 apache-maven
 # Set environment paths
-
+RUN  mkdir  /app
 ENV JAVA_HOME=/opt/amazon-corretto-17
 ENV PATH=$JAVA_HOME/bin:/opt/apache-maven/bin:$PATH
 
 # Build application
 WORKDIR /app
-COPY src /app/src
-COPY pom.xml run.sh /app/
-RUN mvn clean package
+COPY src ./src
+COPY pom.xml run.sh ./
+# build and debug build
+RUN mvn clean package && ls -lh target/  
+
 
 # -----------------------------
 # Runtime stage
 # -----------------------------
 FROM docker.io/redhat/ubi9-minimal:latest
 
+RUN mkdir /app
 # Install tools
 RUN microdnf install -y tar xz gzip bash
 
@@ -48,8 +51,8 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Create app directory and copy built jar and run.sh
 WORKDIR /app
-COPY --from=build /app/target/shipping-1.0.jar /app/shipping.jar
-COPY --from=build /app/run.sh /app/
+COPY --from=build /app/target/ ./target
+COPY --from=build /app/run.sh ./
 
 # Make run.sh executable
 RUN chmod +x /app/run.sh
