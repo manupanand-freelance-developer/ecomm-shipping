@@ -1,4 +1,4 @@
-package com.instana.robotshop.shipping;
+package com.ecomm.robotshop.shipping;
 
 
 public class Calculator {

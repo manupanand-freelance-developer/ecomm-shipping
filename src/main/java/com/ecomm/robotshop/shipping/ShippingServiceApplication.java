@@ -1,10 +1,9 @@
-package com.instana.robotshop.shipping;
+package com.ecomm.robotshop.shipping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import com.instana.sdk.support.SpanSupport;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -59,18 +58,18 @@ public class ShippingServiceApplication implements WebMvcConfigurer {
         }
     }
 
-    @Override
+   @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new InstanaDatacenterTagInterceptor());
+        registry.addInterceptor(new LoggingDatacenterInterceptor());
     }
 
-    private static class InstanaDatacenterTagInterceptor extends HandlerInterceptorAdapter {
+    private static class LoggingDatacenterInterceptor extends HandlerInterceptorAdapter {
         @Override
         public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-            SpanSupport.annotate("datacenter", DATA_CENTERS[new Random().nextInt(DATA_CENTERS.length)]);
-
+            String datacenter = DATA_CENTERS[new Random().nextInt(DATA_CENTERS.length)];
+            System.out.println("Request tagged with datacenter: " + datacenter);
             return super.preHandle(request, response, handler);
         }
     }
+
 }

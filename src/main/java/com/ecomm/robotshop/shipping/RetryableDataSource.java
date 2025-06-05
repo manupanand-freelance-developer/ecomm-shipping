@@ -1,4 +1,4 @@
-package com.instana.robotshop.shipping;
+package com.ecomm.robotshop.shipping;
 
 import java.sql.Connection;
 import java.sql.SQLException;
