@@ -16,7 +16,7 @@ RUN mvn clean package
 FROM docker.io/redhat/ubi9-minimal:latest
 
 # Install required packages
-RUN microdnf install -y tar xz gzip bash curl && microdnf clean all
+RUN microdnf install -y tar xz gzip bash  && microdnf clean all
 
 # Install Amazon Corretto JDK 17 (ARM64)
 RUN cd /opt && \
