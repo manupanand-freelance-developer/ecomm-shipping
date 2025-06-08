@@ -106,26 +106,26 @@ public class Controller {
     }
 
     @GetMapping("/calc/{id}")
-    public Ship caclc(@PathVariable long id) {
-        double homeLatitude = 51.164896;
-        double homeLongitude = 7.068792;
+    public Ship calc(@PathVariable long id) {
+    double homeLatitude = 51.164896;
+    double homeLongitude = 7.068792;
 
-        logger.info("Calculation for {}", id);
+    logger.info("Calculation for {}", id);
 
-        City city = cityrepo.findById(id);
-        if (city == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "city not found");
-        }
+    City city = cityrepo.findById(id)
+                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "city not found"));
 
-        Calculator calc = new Calculator(city);
-        long distance = calc.getDistance(homeLatitude, homeLongitude);
-        // avoid rounding
-        double cost = Math.rint(distance * 5) / 100.0;
-        Ship ship = new Ship(distance, cost);
-        logger.info("shipping {}", ship);
+    Calculator calc = new Calculator(city);
+    long distance = calc.getDistance(homeLatitude, homeLongitude);
+    // avoid rounding
+    double cost = Math.rint(distance * 5) / 100.0;
+    Ship ship = new Ship(distance, cost);
+    logger.info("shipping {}", ship);
 
-        return ship;
+    return ship;
     }
+
+
 
     // enforce content type
     @PostMapping(path = "/confirm/{id}", consumes = "application/json", produces = "application/json")

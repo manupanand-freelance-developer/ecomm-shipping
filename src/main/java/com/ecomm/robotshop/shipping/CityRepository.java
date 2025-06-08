@@ -1,5 +1,5 @@
 package com.ecomm.robotshop.shipping;
-
+import java.util.Optional;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +13,5 @@ public interface CityRepository extends CrudRepository<City, Long> {
     )
     List<City> match(String code, String text);
 
-    City findById(long id);
+    Optional<City> findById(Long id);
 }
