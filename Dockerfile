@@ -35,9 +35,8 @@ USER roboshop
 
 # Copy app and agent files
 COPY --from=build /app/target /app/target
-COPY --from=build /app/run.sh /app/run.sh
 # COPY newrelic/ /app/newrelic/
 
-RUN chmod +x /app/run.sh
+#RUN chmod +x /app/run.sh
 
 ENTRYPOINT ["bash", "/app/run.sh"]
