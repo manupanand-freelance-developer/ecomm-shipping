@@ -13,13 +13,17 @@ public class JpaConfig {
 
     @Bean
     public DataSource getDataSource() {
-        String JDBC_URL = String.format("jdbc:mysql://%s/cities?useSSL=false&autoReconnect=true", System.getenv("DB_HOST") == null ? "mysql" : System.getenv("DB_HOST"));
+        String dbHost = System.getenv("DB_HOST") == null ? "mysql" : System.getenv("DB_HOST");
+        String JDBC_URL = String.format(
+            "jdbc:mysql://%s/cities?useSSL=false&autoReconnect=true&allowPublicKeyRetrieval=true", 
+            dbHost
+        );
 
         logger.info("jdbc url {}", JDBC_URL);
 
-        DataSourceBuilder bob = DataSourceBuilder.create();
+        DataSourceBuilder<?> bob = DataSourceBuilder.create();
 
-        bob.driverClassName("com.mysql.jdbc.Driver");
+        bob.driverClassName("com.mysql.cj.jdbc.Driver");
         bob.url(JDBC_URL);
         bob.username("shipping");
         bob.password("RoboShop@1");
