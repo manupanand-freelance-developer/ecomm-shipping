@@ -27,16 +27,19 @@ RUN cd /opt && \
 # Set environment path
 ENV JAVA_HOME=/opt/amazon-corretto-17
 ENV PATH=$JAVA_HOME/bin:$PATH
+WORKDIR /app
+COPY --from=build /app/run.sh /app/run.sh
+COPY --from=build /app/target /app/target
+
+RUN chmod +x /app/run.sh
 
 # Create user and app directory
 RUN useradd -r -d /app roboshop && mkdir -p /app && chown roboshop:roboshop /app
-WORKDIR /app
+
 USER roboshop
 
 # Copy app and agent files
-COPY --from=build /app/target /app/target
 # COPY newrelic/ /app/newrelic/
 
-#RUN chmod +x /app/run.sh
 
 ENTRYPOINT ["bash", "/app/run.sh"]
