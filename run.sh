@@ -20,14 +20,16 @@ fi
 # java -jar /app/target/*.jar
 
 ls -la /app/target
+pwd
 
 # Find the JAR file safely (skip test/original jars)
-JAR_FILE=$(find /app/target -type f -name "*.jar" | grep -v "original" | head -n 1)
+# JAR_FILE=$(find /app/target -type f -name "*.jar" | grep -v "original" | head -n 1)
 
-if [ -z "$JAR_FILE" ]; then
-    echo "❌ No runnable JAR found in /app/target"
-    exit 1
-fi
+# if [ -z "$JAR_FILE" ]; then
+#     echo "❌ No runnable JAR found in /app/target"
+#     exit 1
+# fi
 
-echo "✅ Starting application with: $JAR_FILE"
-exec java -jar "$JAR_FILE"
+ echo "✅ Starting application :"
+# exec java -jar "$JAR_FILE"
+ java -jar /app/target/*.jar
