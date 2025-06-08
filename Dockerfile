@@ -1,44 +1,24 @@
 # -----------------------------
 # Build stage
 # -----------------------------
-FROM docker.io/redhat/ubi9-minimal:latest AS build
+FROM maven:3.9.2-amazoncorretto-17 AS build
 
-# Install tools
-RUN microdnf install -y tar xz gzip
-# Install Amazon Corretto JDK 17 (ARM)
-RUN cd /opt && \
-    curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
-    tar -xzf amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
-    mv amazon-corretto-17.* amazon-corretto-17
-
-# Install Maven
-RUN cd /opt && \
-    curl -LO https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
-    tar -xzf apache-maven-3.9.9-bin.tar.gz && \
-    mv apache-maven-3.9.9 apache-maven
-# Set environment paths
-RUN  mkdir  /app
-ENV JAVA_HOME=/opt/amazon-corretto-17
-ENV PATH=$JAVA_HOME/bin:/opt/apache-maven/bin:$PATH
-
-# Build application
+# Create app directory and build
 WORKDIR /app
 COPY src ./src
 COPY pom.xml run.sh ./
-# build and debug build
-RUN mvn clean package && ls -lh target/  
-
+# build application
+RUN mvn clean package
 
 # -----------------------------
 # Runtime stage
 # -----------------------------
 FROM docker.io/redhat/ubi9-minimal:latest
 
-RUN mkdir /app
-# Install tools
-RUN microdnf install -y tar xz gzip bash
+# Install required packages
+RUN microdnf install -y tar xz gzip bash curl && microdnf clean all
 
-# Install Amazon Corretto JDK 17
+# Install Amazon Corretto JDK 17 (ARM64)
 RUN cd /opt && \
     curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
     tar -xzf amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
@@ -48,15 +28,16 @@ RUN cd /opt && \
 ENV JAVA_HOME=/opt/amazon-corretto-17
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-
-# Create app directory and copy built jar and run.sh
+# Create user and app directory
+RUN useradd -r -d /app roboshop && mkdir -p /app && chown roboshop:roboshop /app
 WORKDIR /app
-COPY --from=build /app/target/ ./target
-COPY --from=build /app/run.sh ./
+USER roboshop
 
-# Make run.sh executable
+# Copy app and agent files
+COPY --from=build /app/target /app/target
+COPY --from=build /app/run.sh /app/run.sh
+# COPY newrelic/ /app/newrelic/
+
 RUN chmod +x /app/run.sh
 
-# NewRelic agent can be added here if needed
-
-ENTRYPOINT ["bash", "./run.sh"]
+ENTRYPOINT ["bash", "/app/run.sh"]
