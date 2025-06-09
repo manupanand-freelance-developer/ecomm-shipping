@@ -20,6 +20,6 @@ WORKDIR     /app
 RUN         chown roboshop:roboshop /app
 USER        roboshop
 COPY        --from=0 /app/target/shipping-1.0.jar /app/shipping.jar
-COPY        newrelic/ /app/newrelic/
+# COPY        newrelic/ /app/newrelic/
 COPY        run.sh /app
 ENTRYPOINT  ["bash", "/app/run.sh"]

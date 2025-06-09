@@ -1,1 +1,2 @@
-java -XX:InitialRAMPercentage=90 -XX:MaxRAMPercentage=95 -javaagent:/app/newrelic/newrelic.jar -Dnewrelic.config.license_key=${NEW_RELIC_LICENSE_KEY}  -Dnewrelic.config.app_name=shipping -jar /app/shipping.jar
+# java -XX:InitialRAMPercentage=90 -XX:MaxRAMPercentage=95 -javaagent:/app/newrelic/newrelic.jar -Dnewrelic.config.license_key=${NEW_RELIC_LICENSE_KEY}  -Dnewrelic.config.app_name=shipping -jar /app/shipping.jar
+java -jar /app/shipping.jar
