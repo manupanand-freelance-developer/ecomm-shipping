@@ -2,6 +2,7 @@ const { Sequelize, DataTypes, Op } = require('sequelize');
 require('dotenv').config();
 
 const dbHost = process.env.DB_HOST || 'mysql';
+
 const sequelize = new Sequelize(`mysql://shipping:Roboshop%401@${dbHost}/cities`, {
   dialect: 'mysql',
   logging: false,
@@ -30,34 +31,57 @@ const sequelize = new Sequelize(`mysql://shipping:Roboshop%401@${dbHost}/cities`
   },
 });
 
+// Model for `cities` table
 const City = sequelize.define('City', {
   uuid: {
     type: DataTypes.BIGINT,
     primaryKey: true,
     autoIncrement: true,
   },
-  code: {
-    type: DataTypes.STRING,
-    field: 'country_code',
+  country_code: {
+    type: DataTypes.STRING(2),
+    allowNull: true,
   },
-  city: DataTypes.STRING,
-  name: DataTypes.STRING,
-  region: DataTypes.STRING,
-  latitude: DataTypes.DOUBLE,
-  longitude: DataTypes.DOUBLE,
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  region: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  latitude: {
+    type: DataTypes.DECIMAL(10, 7),
+    allowNull: true,
+  },
+  longitude: {
+    type: DataTypes.DECIMAL(10, 7),
+    allowNull: true,
+  },
 }, {
   tableName: 'cities',
   timestamps: false,
 });
 
+// Model for `codes` table
 const Code = sequelize.define('Code', {
   uuid: {
     type: DataTypes.BIGINT,
     primaryKey: true,
     autoIncrement: true,
   },
-  code: DataTypes.STRING,
-  name: DataTypes.STRING,
+  code: {
+    type: DataTypes.STRING(2),
+    allowNull: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   tableName: 'codes',
   timestamps: false,
