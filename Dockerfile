@@ -1,45 +1,30 @@
-# -----------------------------
-# Build stage
-# -----------------------------
-FROM maven:3.9.2-amazoncorretto-17 AS build
-
-# Create app directory and build
-WORKDIR /app
-COPY src ./src
-COPY pom.xml run.sh ./
-# build application
-RUN mvn clean package
-
-# -----------------------------
-# Runtime stage
-# -----------------------------
 FROM docker.io/redhat/ubi9-minimal:latest
 
-# Install required packages
-RUN microdnf install -y tar xz gzip bash  && microdnf clean all
+# Install necessary tools
+RUN microdnf install -y tar xz  bash
 
-# Install Amazon Corretto JDK 17 (ARM64)
+# Install Node.js v22.14.0
 RUN cd /opt && \
-    curl -LO https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
-    tar -xzf amazon-corretto-17-aarch64-linux-jdk.tar.gz && \
-    mv amazon-corretto-17.* amazon-corretto-17
+    curl -LO https://nodejs.org/dist/v22.16.0/node-v22.16.0-linux-arm64.tar.xz && \
+    tar -xJf node-v22.16.0-linux-arm64.tar.xz && \
+    rm node-v22.16.0-linux-arm64.tar.xz
 
-# Set environment path
-ENV JAVA_HOME=/opt/amazon-corretto-17
-ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Add Node.js to PATH
+ENV PATH="/opt/node-v22.16.0-linux-arm64/bin:$PATH"
+
+# Create app directory
 WORKDIR /app
-COPY --from=build /app/run.sh /app/run.sh
-COPY --from=build /app/target /app/target
 
-RUN chmod +x /app/run.sh
+# Copy project files
+COPY package.json server.js run.sh ./
+COPY models.js Calculator.js CartHelper.js Ship.js ./
 
-# Create user and app directory
-RUN useradd -r -d /app roboshop && mkdir -p /app && chown roboshop:roboshop /app
+# Install dependencies
+RUN npm install
 
-USER roboshop
+# Make sure run.sh is executable
+RUN chmod +x ./run.sh
 
-# Copy app and agent files
-# COPY newrelic/ /app/newrelic/
-
-
-ENTRYPOINT ["bash", "/app/run.sh"]
+# Entrypoint
+ENTRYPOINT ["bash", "./run.sh"]
